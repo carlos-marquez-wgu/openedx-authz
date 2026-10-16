@@ -39,7 +39,7 @@ from pathlib import Path
 # Pinned to the @openedx/paragon major used by frontend-app-admin-console master
 # (peerDependency "@openedx/paragon": "^23"). This is the concrete 23.x release
 # the vendored list is generated from.
-PARAGON_VERSION = "23.21.3"
+PARAGON_VERSION = "23.23.0"
 
 # The published package re-exports every generated icon component from this
 # built barrel as ``export { default as <IconName> } from "./<file>";``.
