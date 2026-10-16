@@ -72,7 +72,7 @@ jobs:
         if: steps.compare.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v8.1.1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.WORKFLOWS_TOKEN }}
           branch: bot/sync-paragon-icons
           delete-branch: true
           commit-message: |
