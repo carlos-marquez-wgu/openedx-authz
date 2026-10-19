@@ -29,16 +29,11 @@ jobs:
       - name: Fetch upstream Paragon version from frontend-app-admin-console
         id: upstream
         run: |
-          range=$(curl -fsSL \
-            https://raw.githubusercontent.com/openedx/frontend-app-admin-console/master/package.json \
-            | jq -r '.dependencies["@openedx/paragon"] // .peerDependencies["@openedx/paragon"]')
-          # Resolve the semver range (e.g. "^23") to the latest concrete published version.
-          # --json returns an array when multiple versions match; jq grabs the last (highest).
-          concrete=$(npm view "@openedx/paragon@${range}" version --json \
-            | jq -r 'if type == "array" then last else . end')
-          echo "range=$range" >> "$GITHUB_OUTPUT"
-          echo "version=$concrete" >> "$GITHUB_OUTPUT"
-          echo "Upstream @openedx/paragon: $range → $concrete"
+          version=$(curl -fsSL \
+            https://raw.githubusercontent.com/openedx/frontend-app-admin-console/master/package-lock.json \
+            | jq -r '.packages["node_modules/@openedx/paragon"].version')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Upstream @openedx/paragon: $version"
 
       - name: Compare versions
         id: compare
@@ -87,8 +82,7 @@ jobs:
             ## Summary
 
             `frontend-app-admin-console` updated its `@openedx/paragon` dependency
-            from `${{ steps.current.outputs.version }}` to `${{ steps.upstream.outputs.version }}`
-            (declared as `${{ steps.upstream.outputs.range }}`).
+            from `${{ steps.current.outputs.version }}` to `${{ steps.upstream.outputs.version }}`.
 
             This PR updates the vendored Paragon icon allow-list to match (see [ADR 0029]).
 
