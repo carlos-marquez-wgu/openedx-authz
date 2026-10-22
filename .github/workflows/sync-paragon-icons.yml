@@ -5,10 +5,12 @@ on:
     - cron: "0 0 * * 1"
   workflow_dispatch:
 
+# The pull request is created with a GitHub App installation token so that it
+# triggers the `pull_request` workflows in ci.yml without needing a maintainer to
+# click "Approve workflows to run". The default GITHUB_TOKEN only needs read
+# access for checkout.
 permissions:
-  actions: write
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   sync-paragon-icons:
@@ -66,11 +68,20 @@ jobs:
         if: steps.compare.outputs.changed == 'true'
         run: make paragon_icons
 
+      - name: Generate GitHub App token
+        if: steps.compare.outputs.changed == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Create Pull Request
         if: steps.compare.outputs.changed == 'true'
         id: cpr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
+          token: ${{ steps.app-token.outputs.token }}
           branch: bot/sync-paragon-icons
           delete-branch: true
           commit-message: |
@@ -109,9 +120,3 @@ jobs:
           labels: |
             dependencies
             automated
-
-      - name: Trigger CI on the bot branch
-        if: steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run ci.yml --ref bot/sync-paragon-icons
