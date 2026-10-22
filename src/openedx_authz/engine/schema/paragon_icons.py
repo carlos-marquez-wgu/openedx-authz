@@ -8,14 +8,14 @@ The names are the component exports of ``@openedx/paragon/icons`` at the pinned
 version below, used by :mod:`openedx_authz.engine.schema.validation` to reject
 schema ``icon`` values that are not real Paragon icons (ADR 0017 §4).
 
-Source: https://unpkg.com/@openedx/paragon@23.21.3/icons/es5/index.js
-Paragon version: 23.21.3
+Source: https://unpkg.com/@openedx/paragon@23.23.0/icons/es5/index.js
+Paragon version: 23.23.0
 Icon count: 2317
 """
 
 from __future__ import annotations
 
-PARAGON_VERSION = "23.21.3"
+PARAGON_VERSION = "23.23.0"
 
 PARAGON_ICON_NAMES: frozenset[str] = frozenset(
     {
